@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deriv Last Digits Display with Trade Simulation</title>
+    <style>
+        .market-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 20px;
+            padding: 10px;
+        }
+
+        .market {
+            width: 48%;
+            min-width: 400px;
+            margin: 10px 0;
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        h2 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 1.2em;
+        }
+
+        .counts p {
+            margin: 3px 0;
+        }
+
+        .last-digit {
+            border: 1px solid black;
+            text-align: center;
+            width: 30px;
+        }
+
+        .equations-container {
+            position: absolute;
+            right: 20px;
+            top: 110px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .equation-box {
+            width: 200px;
+            height: 100px;
+            background-image: url('https://i.pinimg.com/736x/fd/f4/38/fdf4383642bbefa31972a86cdea03f36.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .equation-label {
+            color: red;
+            font-family: 'Jokerman', cursive;
+            font-size: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .simulation-box {
+            margin-left: 10px;
+            font-weight: bold;
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <h1>The Collective Society</h1>
+
+    <div class="market-container">
+        <!-- Volatility 10 Index Market -->
+        <div class="market">
+            <h2>Volatility 10 Index</h2>
+            <table id="table10">
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+            </table>
+            <div class="counts">
+                <p>0: <span id="count10_0" class="count-box">0</span> <span id="consecutive10_0" class="consecutive-box">0</span> <span id="maxConsecutive10_0" class="max-consecutive-box">0</span> <span id="simulation10_0" class="simulation-box">0.00</span></p>
+                <p>1: <span id="count10_1" class="count-box">0</span> <span id="consecutive10_1" class="consecutive-box">0</span> <span id="maxConsecutive10_1" class="max-consecutive-box">0</span> <span id="simulation10_1" class="simulation-box">0.00</span></p>
+                <p>2: <span id="count10_2" class="count-box">0</span> <span id="consecutive10_2" class="consecutive-box">0</span> <span id="maxConsecutive10_2" class="max-consecutive-box">0</span> <span id="simulation10_2" class="simulation-box">0.00</span></p>
+                <p>3: <span id="count10_3" class="count-box">0</span> <span id="consecutive10_3" class="consecutive-box">0</span> <span id="maxConsecutive10_3" class="max-consecutive-box">0</span> <span id="simulation10_3" class="simulation-box">0.00</span></p>
+                <p>4: <span id="count10_4" class="count-box">0</span> <span id="consecutive10_4" class="consecutive-box">0</span> <span id="maxConsecutive10_4" class="max-consecutive-box">0</span> <span id="simulation10_4" class="simulation-box">0.00</span></p>
+                <p>5: <span id="count10_5" class="count-box">0</span> <span id="consecutive10_5" class="consecutive-box">0</span> <span id="maxConsecutive10_5" class="max-consecutive-box">0</span> <span id="simulation10_5" class="simulation-box">0.00</span></p>
+                <p>6: <span id="count10_6" class="count-box">0</span> <span id="consecutive10_6" class="consecutive-box">0</span> <span id="maxConsecutive10_6" class="max-consecutive-box">0</span> <span id="simulation10_6" class="simulation-box">0.00</span></p>
+                <p>7: <span id="count10_7" class="count-box">0</span> <span id="consecutive10_7" class="consecutive-box">0</span> <span id="maxConsecutive10_7" class="max-consecutive-box">0</span> <span id="simulation10_7" class="simulation-box">0.00</span></p>
+                <p>8: <span id="count10_8" class="count-box">0</span> <span id="consecutive10_8" class="consecutive-box">0</span> <span id="maxConsecutive10_8" class="max-consecutive-box">0</span> <span id="simulation10_8" class="simulation-box">0.00</span></p>
+                <p>9: <span id="count10_9" class="count-box">0</span> <span id="consecutive10_9" class="consecutive-box">0</span> <span id="maxConsecutive10_9" class="max-consecutive-box">0</span> <span id="simulation10_9" class="simulation-box">0.00</span></p>
+            </div>
+        </div>
+
+        <!-- Volatility 25 Index Market -->
+        <div class="market">
+            <h2>Volatility 25 Index</h2>
+            <table id="table25">
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+            </table>
+            <div class="counts">
+                <p>0: <span id="count25_0" class="count-box">0</span> <span id="consecutive25_0" class="consecutive-box">0</span> <span id="maxConsecutive25_0" class="max-consecutive-box">0</span> <span id="simulation25_0" class="simulation-box">0.00</span></p>
+                <p>1: <span id="count25_1" class="count-box">0</span> <span id="consecutive25_1" class="consecutive-box">0</span> <span id="maxConsecutive25_1" class="max-consecutive-box">0</span> <span id="simulation25_1" class="simulation-box">0.00</span></p>
+                <p>2: <span id="count25_2" class="count-box">0</span> <span id="consecutive25_2" class="consecutive-box">0</span> <span id="maxConsecutive25_2" class="max-consecutive-box">0</span> <span id="simulation25_2" class="simulation-box">0.00</span></p>
+                <p>3: <span id="count25_3" class="count-box">0</span> <span id="consecutive25_3" class="consecutive-box">0</span> <span id="maxConsecutive25_3" class="max-consecutive-box">0</span> <span id="simulation25_3" class="simulation-box">0.00</span></p>
+                <p>4: <span id="count25_4" class="count-box">0</span> <span id="consecutive25_4" class="consecutive-box">0</span> <span id="maxConsecutive25_4" class="max-consecutive-box">0</span> <span id="simulation25_4" class="simulation-box">0.00</span></p>
+                <p>5: <span id="count25_5" class="count-box">0</span> <span id="consecutive25_5" class="consecutive-box">0</span> <span id="maxConsecutive25_5" class="max-consecutive-box">0</span> <span id="simulation25_5" class="simulation-box">0.00</span></p>
+                <p>6: <span id="count25_6" class="count-box">0</span> <span id="consecutive25_6" class="consecutive-box">0</span> <span id="maxConsecutive25_6" class="max-consecutive-box">0</span> <span id="simulation25_6" class="simulation-box">0.00</span></p>
+                <p>7: <span id="count25_7" class="count-box">0</span> <span id="consecutive25_7" class="consecutive-box">0</span> <span id="maxConsecutive25_7" class="max-consecutive-box">0</span> <span id="simulation25_7" class="simulation-box">0.00</span></p>
+                <p>8: <span id="count25_8" class="count-box">0</span> <span id="consecutive25_8" class="consecutive-box">0</span> <span id="maxConsecutive25_8" class="max-consecutive-box">0</span> <span id="simulation25_8" class="simulation-box">0.00</span></p>
+                <p>9: <span id="count25_9" class="count-box">0</span> <span id="consecutive25_9" class="consecutive-box">0</span> <span id="maxConsecutive25_9" class="max-consecutive-box">0</span> <span id="simulation25_9" class="simulation-box">0.00</span></p>
+            </div>
+        </div>
+
+        <!-- Volatility 50 Index Market -->
+        <div class="market">
+            <h2>Volatility 50 Index</h2>
+            <table id="table50">
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+            </table>
+            <div class="counts">
+                <p>0: <span id="count50_0" class="count-box">0</span> <span id="consecutive50_0" class="consecutive-box">0</span> <span id="maxConsecutive50_0" class="max-consecutive-box">0</span> <span id="simulation50_0" class="simulation-box">0.00</span></p>
+                <p>1: <span id="count50_1" class="count-box">0</span> <span id="consecutive50_1" class="consecutive-box">0</span> <span id="maxConsecutive50_1" class="max-consecutive-box">0</span> <span id="simulation50_1" class="simulation-box">0.00</span></p>
+                <p>2: <span id="count50_2" class="count-box">0</span> <span id="consecutive50_2" class="consecutive-box">0</span> <span id="maxConsecutive50_2" class="max-consecutive-box">0</span> <span id="simulation50_2" class="simulation-box">0.00</span></p>
+                <p>3: <span id="count50_3" class="count-box">0</span> <span id="consecutive50_3" class="consecutive-box">0</span> <span id="maxConsecutive50_3" class="max-consecutive-box">0</span> <span id="simulation50_3" class="simulation-box">0.00</span></p>
+                <p>4: <span id="count50_4" class="count-box">0</span> <span id="consecutive50_4" class="consecutive-box">0</span> <span id="maxConsecutive50_4" class="max-consecutive-box">0</span> <span id="simulation50_4" class="simulation-box">0.00</span></p>
+                <p>5: <span id="count50_5" class="count-box">0</span> <span id="consecutive50_5" class="consecutive-box">0</span> <span id="maxConsecutive50_5" class="max-consecutive-box">0</span> <span id="simulation50_5" class="simulation-box">0.00</span></p>
+                <p>6: <span id="count50_6" class="count-box">0</span> <span id="consecutive50_6" class="consecutive-box">0</span> <span id="maxConsecutive50_6" class="max-consecutive-box">0</span> <span id="simulation50_6" class="simulation-box">0.00</span></p>
+                <p>7: <span id="count50_7" class="count-box">0</span> <span id="consecutive50_7" class="consecutive-box">0</span> <span id="maxConsecutive50_7" class="max-consecutive-box">0</span> <span id="simulation50_7" class="simulation-box">0.00</span></p>
+                <p>8: <span id="count50_8" class="count-box">0</span> <span id="consecutive50_8" class="consecutive-box">0</span> <span id="maxConsecutive50_8" class="max-consecutive-box">0</span> <span id="simulation50_8" class="simulation-box">0.00</span></p>
+                <p>9: <span id="count50_9" class="count-box">0</span> <span id="consecutive50_9" class="consecutive-box">0</span> <span id="maxConsecutive50_9" class="max-consecutive-box">0</span> <span id="simulation50_9" class="simulation-box">0.00</span></p>
+            </div>
+        </div>
+
+        <!-- Volatility 75 Index Market -->
+        <div class="market">
+            <h2>Volatility 75 Index</h2>
+            <table id="table75">
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+            </table>
+            <div class="counts">
+                <p>0: <span id="count75_0" class="count-box">0</span> <span id="consecutive75_0" class="consecutive-box">0</span> <span id="maxConsecutive75_0" class="max-consecutive-box">0</span> <span id="simulation75_0" class="simulation-box">0.00</span></p>
+                <p>1: <span id="count75_1" class="count-box">0</span> <span id="consecutive75_1" class="consecutive-box">0</span> <span id="maxConsecutive75_1" class="max-consecutive-box">0</span> <span id="simulation75_1" class="simulation-box">0.00</span></p>
+                <p>2: <span id="count75_2" class="count-box">0</span> <span id="consecutive75_2" class="consecutive-box">0</span> <span id="maxConsecutive75_2" class="max-consecutive-box">0</span> <span id="simulation75_2" class="simulation-box">0.00</span></p>
+                <p>3: <span id="count75_3" class="count-box">0</span> <span id="consecutive75_3" class="consecutive-box">0</span> <span id="maxConsecutive75_3" class="max-consecutive-box">0</span> <span id="simulation75_3" class="simulation-box">0.00</span></p>
+                <p>4: <span id="count75_4" class="count-box">0</span> <span id="consecutive75_4" class="consecutive-box">0</span> <span id="maxConsecutive75_4" class="max-consecutive-box">0</span> <span id="simulation75_4" class="simulation-box">0.00</span></p>
+                <p>5: <span id="count75_5" class="count-box">0</span> <span id="consecutive75_5" class="consecutive-box">0</span> <span id="maxConsecutive75_5" class="max-consecutive-box">0</span> <span id="simulation75_5" class="simulation-box">0.00</span></p>
+                <p>6: <span id="count75_6" class="count-box">0</span> <span id="consecutive75_6" class="consecutive-box">0</span> <span id="maxConsecutive75_6" class="max-consecutive-box">0</span> <span id="simulation75_6" class="simulation-box">0.00</span></p>
+                <p>7: <span id="count75_7" class="count-box">0</span> <span id="consecutive75_7" class="consecutive-box">0</span> <span id="maxConsecutive75_7" class="max-consecutive-box">0</span> <span id="simulation75_7" class="simulation-box">0.00</span></p>
+                <p>8: <span id="count75_8" class="count-box">0</span> <span id="consecutive75_8" class="consecutive-box">0</span> <span id="maxConsecutive75_8" class="max-consecutive-box">0</span> <span id="simulation75_8" class="simulation-box">0.00</span></p>
+                <p>9: <span id="count75_9" class="count-box">0</span> <span id="consecutive75_9" class="consecutive-box">0</span> <span id="maxConsecutive75_9" class="max-consecutive-box">0</span> <span id="simulation75_9" class="simulation-box">0.00</span></p>
+            </div>
+        </div>
+
+        <!-- Volatility 100 Index Market -->
+        <div class="market">
+            <h2>Volatility 100 Index</h2>
+            <table id="table100">
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+            </table>
+            <div class="counts">
+                <p>0: <span id="count100_0" class="count-box">0</span> <span id="consecutive100_0" class="consecutive-box">0</span> <span id="maxConsecutive100_0" class="max-consecutive-box">0</span> <span id="simulation100_0" class="simulation-box">0.00</span></p>
+                <p>1: <span id="count100_1" class="count-box">0</span> <span id="consecutive100_1" class="consecutive-box">0</span> <span id="maxConsecutive100_1" class="max-consecutive-box">0</span> <span id="simulation100_1" class="simulation-box">0.00</span></p>
+                <p>2: <span id="count100_2" class="count-box">0</span> <span id="consecutive100_2" class="consecutive-box">0</span> <span id="maxConsecutive100_2" class="max-consecutive-box">0</span> <span id="simulation100_2" class="simulation-box">0.00</span></p>
+                <p>3: <span id="count100_3" class="count-box">0</span> <span id="consecutive100_3" class="consecutive-box">0</span> <span id="maxConsecutive100_3" class="max-consecutive-box">0</span> <span id="simulation100_3" class="simulation-box">0.00</span></p>
+                <p>4: <span id="count100_4" class="count-box">0</span> <span id="consecutive100_4" class="consecutive-box">0</span> <span id="maxConsecutive100_4" class="max-consecutive-box">0</span> <span id="simulation100_4" class="simulation-box">0.00</span></p>
+                <p>5: <span id="count100_5" class="count-box">0</span> <span id="consecutive100_5" class="consecutive-box">0</span> <span id="maxConsecutive100_5" class="max-consecutive-box">0</span> <span id="simulation100_5" class="simulation-box">0.00</span></p>
+                <p>6: <span id="count100_6" class="count-box">0</span> <span id="consecutive100_6" class="consecutive-box">0</span> <span id="maxConsecutive100_6" class="max-consecutive-box">0</span> <span id="simulation100_6" class="simulation-box">0.00</span></p>
+                <p>7: <span id="count100_7" class="count-box">0</span> <span id="consecutive100_7" class="consecutive-box">0</span> <span id="maxConsecutive100_7" class="max-consecutive-box">0</span> <span id="simulation100_7" class="simulation-box">0.00</span></p>
+                <p>8: <span id="count100_8" class="count-box">0</span> <span id="consecutive100_8" class="consecutive-box">0</span> <span id="maxConsecutive100_8" class="max-consecutive-box">0</span> <span id="simulation100_8" class="simulation-box">0.00</span></p>
+                <p>9: <span id="count100_9" class="count-box">0</span> <span id="consecutive100_9" class="consecutive-box">0</span> <span id="maxConsecutive100_9" class="max-consecutive-box">0</span> <span id="simulation100_9" class="simulation-box">0.00</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Equations Display -->
+    <div class="equations-container">
+        <div class="equation-box">
+            <p class="equation-label">equation odd <span id="maxConsecutiveOdd10">0</span></p>
+            <p class="equation-label">equation even <span id="maxConsecutiveEven10">0</span></p>
+        </div>
+        <div class="equation-box">
+            <p class="equation-label">equation odd <span id="maxConsecutiveOdd25">0</span></p>
+            <p class="equation-label">equation even <span id="maxConsecutiveEven25">0</span></p>
+        </div>
+        <div class="equation-box">
+            <p class="equation-label">equation odd <span id="maxConsecutiveOdd50">0</span></p>
+            <p class="equation-label">equation even <span id="maxConsecutiveEven50">0</span></p>
+        </div>
+        <div class="equation-box">
+            <p class="equation-label">equation odd <span id="maxConsecutiveOdd75">0</span></p>
+            <p class="equation-label">equation even <span id="maxConsecutiveEven75">0</span></p>
+        </div>
+        <div class="equation-box">
+            <p class="equation-label">equation odd <span id="maxConsecutiveOdd100">0</span></p>
+            <p class="equation-label">equation even <span id="maxConsecutiveEven100">0</span></p>
+        </div>
+    </div>
+
+    <script src="deriv 102.js"></script>
+    <link rel="stylesheet" href="deriv.css" />
+</body>
+</html>
