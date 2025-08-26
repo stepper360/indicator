@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deriv Last Digits Display with Trade Simulation</title>
+    <style>
+        .market-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 10px;
+        }
+
+        .login-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .stepper-strategy {
+            margin-top: 10px;
+        }
+
+        .stepper-strategy h3 {
+            font-size: 1em;
+        }
+
+        .equation-box {
+            width: 100%;
+            height: auto;
+        }
+
+        .market {
+            width: 100%;
+            margin: 10px 0;
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        h2 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 1.2em;
+        }
+
+        .counts p {
+            margin: 3px 0;
+        }
+
+        .last-digit {
+            border: 1px solid black;
+            text-align: center;
+            width: 30px;
+        }
+
+        .quoteContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .triangles {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .quotes {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .triangle {
+            width: 0;
+            height: 0;
+            margin-bottom: 2px;
+        }
+
+        .triangle-up {
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 5px solid green;
+        }
+
+        .triangle-down {
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid red;
+        }
+
+        .quoteBox {
+            width: 60px;
+            height: 30px;
+            border: 1px solid black;
+            text-align: center;
+            line-height: 30px;
+            font-size: 12px;
+        }
+
+        .equations-container {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .equation-box {
+            width: 200px;
+            height: 100px;
+            background-image: url('https://i.pinimg.com/736x/fd/f4/38/fdf4383642bbefa31972a86cdea03f36.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .equation-label {
+            color: red;
+            font-family: 'Jokerman', cursive;
+            font-size: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .simulation-box {
+            margin-left: 10px;
+            font-weight: bold;
+            color: blue;
+        }
+
+        .analysis-box {
+            width: 150px;
+            height: 120px;
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .analysis-box h3 {
+            text-align: center;
+            margin: 0 0 10px 0;
+            font-size: 14px;
+        }
+
+        .analysis-box p {
+            margin: 5px 0;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stepper-strategy h3 {
+            color: #333;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+
+        h1 {
+            font-family: 'Jokerman', cursive, sans-serif;
+            font-size: 15px;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .market {
+            width: 32%;
+            min-width: 400px;
+            margin: 10px;
+            vertical-align: top;
+        }
+
+        table {
+            border-collapse: collapse;
+            background-color: transparent;
+            border: 1px solid black;
+        }
+
+        td {
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            border: 1px solid black;
+            color: blue;
+        }
+
+        .consecutive {
+            color: red !important;
+        }
+
+        .counts p {
+            font-family: 'Jokerman', cursive, sans-serif;
+            color: black;
+            line-height: 1.5;
+            margin: 5px 0;
+        }
+
+        .count-box {
+            border: 1px solid black;
+            padding: 2px;
+            background-color: white;
+            width: 3em;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .stepper-strategy h3 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            color: #333;
+            font-family: 'Jokerman', cursive, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .equation-box {
+            width: 50%;
+            line-height: 70%;
+            min-width: 250px;
+            margin: 1px;
+            padding: 15px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+            background: rgba(255,255,255,0.9);
+        }
+
+        .equation-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://i.pinimg.com/736x/fd/f4/38/fdf4383642bbefa31972a86cdea03f36.jpg');
+            background-size: cover;
+            filter: blur(7px);
+            z-index: -1;
+        }
+
+        .equation-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+
+        .equation-title {
+            font-family: 'Jokerman', cursive;
+            color: red;
+            font-size: 15px;
+            margin: 0;
+        }
+
+        .equation-value {
+            font-family: 'Jokerman', cursive;
+            color: blue;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        text[id^="countAbove"], 
+        text[id^="countBelow"] {
+            font-size: 10px;
+            text-anchor: middle;
+            dominant-baseline: central;
+        }
+
+        .spike-count-box {
+            display: inline-block;
+            min-width: 35px;
+            text-align: center;
+            margin-left: 5px;
+            background: #ffeb3b;
+            border: 1px solid #ffc107;
+            border-radius: 3px;
+            padding: 0 5px;
+        }
+
+        .quoteBox {
+            display: inline-block;
+            width: 50px;
+            height: 30px;
+            border: 1px solid black;
+            margin: 5px;
+            text-align: center;
+            line-height: 30px;
+        }
+
+        svg {
+            display: block;
+            margin: 10px 0;
+        }
+
+        .trigger-item {
+            margin-bottom: 5px;
+        }
+
+        .digit {
+            margin-right: 10px;
+        }
+
+        .bot-display {
+            width: 300px;
+            padding: 20px;
+            border: 1px solid black;
+            background: #f5f5f5;
+            margin: 20px auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .bot-display h2 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+        .bot-display p {
+            margin: 5px 0;
+            font-family: 'Jokerman', cursive;
+            color: #333;
+        }
+
+        .real-account-box {
+            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            border: 2px solid #0d8bf2;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .alert-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff4444;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <h1>The Collective Society</h1>
+    
+    <!-- Alert Sound Element -->
+    <audio id="alertSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Real Account Container -->
+    <div id="realAccountContainer" style="position: absolute; top: 20px; right: 20px; width: 30%; height: auto; border: 2px solid black; padding: 10px;">
+        <div id="loginSection" class="login-box">
+            <label for="apiToken">Enter Stepper Code:</label>
+            <input type="text" id="apiToken" placeholder="Enter your Deriv API token" />
+            <button id="loginButton">Login</button>
+            <p id="loginStatus"></p>
+            <!-- Vol 10 Stepper Strategy -->
+            <div class="stepper-strategy">
+                <h3>Vol 10 Stepper Strategy</h3>
+                <div class="equation-box">
+                    <p class="equation-label">equation odd <span id="maxConsecutiveOdd10">0</span></p>
+                    <p class="equation-label">equation even <span id="maxConsecutiveEven10">0</span></p>
+                    <span>accumulation =</span> <span id="accumulation10">$0.00</span>
+                </div>
+            </div>
+            <!-- Vol 25 Stepper Strategy -->
+            <div class="stepper-strategy">
+                <h3>Vol 25 Stepper Strategy</h3>
+                <div class="equation-box">
+                    <p class="equation-label">equation odd <span id="maxConsecutiveOdd25">0</span></p>
+                    <p class="equation-label">equation even <span id="maxConsecutiveEven25">0</span></p>
+                    <span>accumulation =</span> <span id="accumulation25">$0.00</span>
+                </div>
+            </div>
+            <!-- New Run Panel Box Below Even/Odd Count Boxes -->
+            <div class="run-panel-box" style="width: 100%; height: auto; margin-top: 20px; border: 1px solid #ccc; padding: 10px; background: #f9f9f9;">
+                <div class="run-panel__container--mobile">
+                    <div data-testid="drawer" class="dc-drawer run-panel dc-drawer--open" style="z-index: 6;">
+                        <div class="dc-drawer__toggle dc-drawer__toggle--open">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24" role="img" class="dc-drawer__toggle-icon">
+                                <g><path fill-rule="evenodd" d="M31.775 21.291a1.5 1.5 0 0 1-2.066.483L16 13.266l-13.709 8.51a1.5 1.5 0 0 1-1.582-2.55l14.5-9a1.5 1.5 0 0 1 1.582 0l14.5 9a1.5 1.5 0 0 1 .483 2.066" clip-rule="evenodd"></path></g>
+                                <defs><clipPath id="66a5701583d5ae63070dcf35c8859523__a"><path d="M0 0h32v32H0z"></path></clipPath></defs>
+                            </svg>
+                        </div>
+                        <div class="dc-drawer__container">
+                            <div class="dc-drawer__header">
+                                <button id="db-run-panel__clear-button" class="dc-btn dc-btn--secondary run-panel__clear-button" disabled="" tabindex="0" type="submit">
+                                    <span class="dc-text dc-btn__text" style="--text-size: var(--text-size-xs); --text-color: var(--text-general); --text-lh: var(--text-lh-m); --text-weight: var(--text-weight-bold); --text-align: var(--text-align-center);">Reset</span>
+                                </button>
+                            </div>
+                            <div class="dc-drawer__content run-panel__content">
+                                <div class="dc-tabs dc-tabs--top" style="--tab-width: 33.33%;">
+                                    <div class="">
+                                        <ul class="dc-tabs__list dc-tabs__list--top dc-tabs__list--border-bottom">
+                                            <li id="db-run-panel-tab__summary" class="dc-tabs__item dc-tabs__active dc-tabs__item--top">Summary</li>
+                                            <li id="db-run-panel-tab__transactions" class="dc-tabs__item dc-tabs__item--top">Transactions</li>
+                                            <li id="db-run-panel-tab__journal" class="dc-tabs__item dc-tabs__item--top">Journal</li>
+                                            <span class="dc-tabs__active-line dc-tabs__active-line--top" style="left: 0.0416666px; width: 306.635px;"></span>
+                                        </ul>
+                                    </div>
+                                    <div class="dc-tabs__content">
+                                        <div class="run-panel-tab__content--mobile" data-testid="mock-summary">
+                                            <div data-testid="dt_themed_scrollbars" class="dc-themed-scrollbars summary dc-themed-scrollbars__autohide" style="max-height: 100%; max-width: none;">
+                                                <div class="db-summary-card db-summary-card--mobile db-summary-card--inactive" data-testid="dt_mock_summary_card">
+                                                    <p class="dc-text" style="--text-size: var(--text-size-xs); --text-color: var(--text-general); --text-lh: var(--text-lh-s); --text-weight: var(--text-weight-normal); --text-align: var(--text-align-center);">When you’re ready to trade, hit <strong class="summary-panel-inactive__strong">Run</strong>. You’ll be able to track your bot’s performance here.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="run-panel__stat run-panel__stat--mobile">
+                                    <div class="run-panel__stat--info">
+                                        <div class="run-panel__stat--info-item">What's this?</div>
+                                    </div>
+                                    <div class="run-panel__stat--tiles">
+                                        <div class="run-panel__tile">
+                                            <div class="run-panel__tile-title">Total stake</div>
+                                            <div class="run-panel__tile-content"><span></span><span id="totalStake">0.00 USD</span></div>
+                                        </div>
+                                        <div class="run-panel__tile">
+                                            <div class="run-panel__tile-title">Total payout</div>
+                                            <div class="run-panel__tile-content"><span></span><span id="totalPayout">0.00 USD</span></div>
+                                        </div>
+                                        <div class="run-panel__tile">
+                                            <div class="run-panel__tile-title">No. of runs</div>
+                                            <div class="run-panel__tile-content" id="numRuns">0</div>
+                                        </div>
+                                        <div class="run-panel__tile">
+                                            <div class="run-panel__tile-title">Contracts lost</div>
+                                            <div class="run-panel__tile-content" id="contractsLost">0</div>
+                                        </div>
+                                        <div class="run-panel__tile">
+                                            <div class="run-panel__tile-title">Contracts won</div>
+                                            <div class="run-panel__tile-content" id="contractsWon">0</div>
+                                        </div>
+                                        <div class="run-panel__tile">
+                                            <div class="run-panel__tile-title">Total profit/loss</div>
+                                            <div class="run-panel__tile-content run-panel__stat-amount"><span></span><span id="totalProfitLoss">0.00 USD</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="controls__section">
+                        <div class="controls__buttons">
+                            <div class="animation__wrapper controls__animation">
+                                <button id="db-animation__run-button" class="dc-btn dc-btn__effect dc-btn--primary animation__run-button" tabindex="0" type="submit">
+                                    <div class="dc-btn__icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="30" viewBox="0 0 15 30" role="img" fill="#fff">
+                                            <g><path d="m2.852 7.023 11.25 6.875c.546.352.898.977.898 1.602 0 .664-.352 1.29-.898 1.602l-11.25 6.875c-.586.351-1.329.39-1.914.039C.352 23.703 0 23.078 0 22.375V8.625c0-.664.352-1.29.938-1.602a1.87 1.87 0 0 1 1.914 0"></path></g>
+                                            <defs><clipPath id="5ee83372ccfd798812bd05e435d763a1__a"><path d="M0 0h15v30H0z"></path></clipPath></defs>
+                                        </svg>
+                                    </div>
+                                    <span class="dc-text dc-btn__text" style="--text-size: var(--text-size-xs); --text-color: var(--text-general); --text-lh: var(--text-lh-m); --text-weight: var(--text-weight-bold); --text-align: var(--text-align-center);">Run</span>
+                                </button>
+                                <div class="animation__container controls__animation">
+                                    <span class="animation__text">Bot is not running</span>
+                                    <div class="animation__progress">
+                                        <div class="animation__progress-line">
+                                            <div class="animation__progress-bar animation__progress-0"></div>
+                                        </div>
+                                        <div class="circular-wrapper"><span class="static-circle"></span><span class="dynamic-circle"></span></div>
+                                        <div class="circular-wrapper"><span class="static-circle"></span><span class="dynamic-circle"></span></div>
+                                        <div class="circular-wrapper"><span class="static-circle"></span><span class="dynamic-circle"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="accountInfo" style="display: none;">
+            <p>Account: <span id="accountName"></span></p>
+            <p>Balance: $<span id="accountBalance">0.00</span></p>
+            <p>Session Duration: <span id="sessionDuration">00:00:00</span></p>
+            <p>Vol 10 Real Bot: <span id="v10Status">idle</span> <span id="v10Result"></span></p>
+            <p>Vol 25 Real Bot: <span id="v25Status">idle</span> <span id="v25Result"></span></p>
+        </div>
+    </div>
+
+    <div class="market-container">
+        <!-- Volatility 10 Index Market -->
+        <div class="market">
+            <h2>Volatility 10 Index</h2>
+            <div id="balance10">Balance: $2,100.00</div>
+            <div class="quoteContainer" id="quoteContainer10">
+                <div class="triangles">
+                    <div class="triangle" id="triangle10_1"></div>
+                    <div class="triangle" id="triangle10_2"></div>
+                    <div class="triangle" id="triangle10_3"></div>
+                    <div class="triangle" id="triangle10_4"></div>
+                </div>
+                <div class="quotes">
+                    <div class="quoteBox" id="quoteBox10_1"></div>
+                    <div class="quoteBox" id="quoteBox10_2"></div>
+                    <div class="quoteBox" id="quoteBox10_3"></div>
+                    <div class="quoteBox" id="quoteBox10_4"></div>
+                </div>
+            </div>
+            <table id="table10">
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+            </table>
+            <svg id="graph10" width="200" height="300"></svg>
+            <div class="analysis-box" id="analysis10">
+                <h3>Analysis mode</h3>
+                <p>rise win = <span id="riseWin10">0</span></p>
+                <p>fall win = <span id="fallWin10">0</span></p>
+                <p>rise loss = <span id="riseLoss10">0</span></p>
+                <p>fall loss = <span id="fallLoss10">0</span></p>
+                <p>total number of trades = <span id="totalTrades10">0</span></p>
+                <p>common triggers = <span id="commonTriggers10"></span></p>
+            </div>
+            <div class="counts">
+                <p>0: <span id="count10_0" class="count-box">0</span> <span id="consecutive10_0" class="consecutive-box">0</span> <span id="maxConsecutive10_0" class="max-consecutive-box">0</span> <span id="simulation10_0" class="simulation-box">0.00</span></p>
+                <p>1: <span id="count10_1" class="count-box">0</span> <span id="consecutive10_1" class="consecutive-box">0</span> <span id="maxConsecutive10_1" class="max-consecutive-box">0</span> <span id="simulation10_1" class="simulation-box">0.00</span></p>
+                <p>2: <span id="count10_2" class="count-box">0</span> <span id="consecutive10_2" class="consecutive-box">0</span> <span id="maxConsecutive10_2" class="max-consecutive-box">0</span> <span id="simulation10_2" class="simulation-box">0.00</span></p>
+                <p>3: <span id="count10_3" class="count-box">0</span> <span id="consecutive10_3" class="consecutive-box">0</span> <span id="maxConsecutive10_3" class="max-consecutive-box">0</span> <span id="simulation10_3" class="simulation-box">0.00</span></p>
+                <p>4: <span id="count10_4" class="count-box">0</span> <span id="consecutive10_4" class="consecutive-box">0</span> <span id="maxConsecutive10_4" class="max-consecutive-box">0</span> <span id="simulation10_4" class="simulation-box">0.00</span></p>
+                <p>5: <span id="count10_5" class="count-box">0</span> <span id="consecutive10_5" class="consecutive-box">0</span> <span id="maxConsecutive10_5" class="max-consecutive-box">0</span> <span id="simulation10_5" class="simulation-box">0.00</span></p>
+                <p>6: <span id="count10_6" class="count-box">0</span> <span id="consecutive10_6" class="consecutive-box">0</span> <span id="maxConsecutive10_6" class="max-consecutive-box">0</span> <span id="simulation10_6" class="simulation-box">0.00</span></p>
+                <p>7: <span id="count10_7" class="count-box">0</span> <span id="consecutive10_7" class="consecutive-box">0</span> <span id="maxConsecutive10_7" class="max-consecutive-box">0</span> <span id="simulation10_7" class="simulation-box">0.00</span></p>
+                <p>8: <span id="count10_8" class="count-box">0</span> <span id="consecutive10_8" class="consecutive-box">0</span> <span id="maxConsecutive10_8" class="max-consecutive-box">0</span> <span id="simulation10_8" class="simulation-box">0.00</span></p>
+                <p>9: <span id="count10_9" class="count-box">0</span> <span id="consecutive10_9" class="consecutive-box">0</span> <span id="maxConsecutive10_9" class="max-consecutive-box">0</span> <span id="simulation10_9" class="simulation-box">0.00</span></p>
+            </div>
+        </div>
+
+        <!-- Volatility 25 Index Market -->
+        <div class="market">
+            <h2>Volatility 25 Index</h2>
+            <div id="balance25">Balance: $2,100.00</div>
+            <div class="quoteContainer" id="quoteContainer25">
+                <div class="triangles">
+                    <div class="triangle" id="triangle25_1"></div>
+                    <div class="triangle" id="triangle25_2"></div>
+                    <div class="triangle" id="triangle25_3"></div>
+                    <div class="triangle" id="triangle25_4"></div>
+                </div>
+                <div class="quotes">
+                    <div class="quoteBox" id="quoteBox25_1"></div>
+                    <div class="quoteBox" id="quoteBox25_2"></div>
+                    <div class="quoteBox" id="quoteBox25_3"></div>
+                    <div class="quoteBox" id="quoteBox25_4"></div>
+                </div>
+            </div>
+            <table id="table25">
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+            </table>
+            <svg id="graph25" width="200" height="300"></svg>
+            <div class="analysis-box" id="analysis25">
+                <h3>Analysis mode</h3>
+                <p>rise win = <span id="riseWin25">0</span></p>
+                <p>fall win = <span id="fallWin25">0</span></p>
+                <p>rise loss = <span id="riseLoss25">0</span></p>
+                <p>fall loss = <span id="fallLoss25">0</span></p>
+                <p>total number of trades = <span id="totalTrades25">0</span></p>
+                <p>common triggers = <span id="commonTriggers25"></span></p>
+            </div>
+            <div class="counts">
+                <p>0: <span id="count25_0" class="count-box">0</span> <span id="consecutive25_0" class="consecutive-box">0</span> <span id="maxConsecutive25_0" class="max-consecutive-box">0</span> <span id="simulation25_0" class="simulation-box">0.00</span></p>
+                <p>1: <span id="count25_1" class="count-box">0</span> <span id="consecutive25_1" class="consecutive-box">0</span> <span id="maxConsecutive25_1" class="max-consecutive-box">0</span> <span id="simulation25_1" class="simulation-box">0.00</span></p>
+                <p>2: <span id="count25_2" class="count-box">0</span> <span id="consecutive25_2" class="consecutive-box">0</span> <span id="maxConsecutive25_2" class="max-consecutive-box">0</span> <span id="simulation25_2" class="simulation-box">0.00</span></p>
+                <p>3: <span id="count25_3" class="count-box">0</span> <span id="consecutive25_3" class="consecutive-box">0</span> <span id="maxConsecutive25_3" class="max-consecutive-box">0</span> <span id="simulation25_3" class="simulation-box">0.00</span></p>
+                <p>4: <span id="count25_4" class="count-box">0</span> <span id="consecutive25_4" class="consecutive-box">0</span> <span id="maxConsecutive25_4" class="max-consecutive-box">0</span> <span id="simulation25_4" class="simulation-box">0.00</span></p>
+                <p>5: <span id="count25_5" class="count-box">0</span> <span id="consecutive25_5" class="consecutive-box">0</span> <span id="maxConsecutive25_5" class="max-consecutive-box">0</span> <span id="simulation25_5" class="simulation-box">0.00</span></p>
+                <p>6: <span id="count25_6" class="count-box">0</span> <span id="consecutive25_6" class="consecutive-box">0</span> <span id="maxConsecutive25_6" class="max-consecutive-box">0</span> <span id="simulation25_6" class="simulation-box">0.00</span></p>
+                <p>7: <span id="count25_7" class="count-box">0</span> <span id="consecutive25_7" class="consecutive-box">0</span> <span id="maxConsecutive25_7" class="max-consecutive-box">0</span> <span id="simulation25_7" class="simulation-box">0.00</span></p>
+                <p>8: <span id="count25_8" class="count-box">0</span> <span id="consecutive25_8" class="consecutive-box">0</span> <span id="maxConsecutive25_8" class="max-consecutive-box">0</span> <span id="simulation25_8" class="simulation-box">0.00</span></p>
+                <p>9: <span id="count25_9" class="count-box">0</span> <span id="consecutive25_9" class="consecutive-box">0</span> <span id="maxConsecutive25_9" class="max-consecutive-box">0</span> <span id="simulation25_9" class="simulation-box">0.00</span></p>
+            </div>
+        </div>
+
+        <!-- Volatility 100 Index Market -->
+        <div class="market">
+            <h2>Volatility 100 Index</h2>
+            <div id="balance100">Balance: $2,100.00</div>
+            <div class="quoteContainer" id="quoteContainer100">
+                <div class="triangles">
+                    <div class="triangle" id="triangle100_1"></div>
+                    <div class="triangle" id="triangle100_2"></div>
+                    <div class="triangle" id="triangle100_3"></div>
+                    <div class="triangle" id="triangle100_4"></div>
+                </div>
+                <div class="quotes">
+                    <div class="quoteBox" id="quoteBox100_1"></div>
+                    <div class="quoteBox" id="quoteBox100_2"></div>
+                    <div class="quoteBox" id="quoteBox100_3"></div>
+                    <div class="quoteBox" id="quoteBox100_4"></div>
+                </div>
+            </div>
+            <table id="table100">
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+                <tr><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td><td class="last-digit"></td></tr>
+            </table>
+            <svg id="graph100" width="200" height="300"></svg>
+            <div class="analysis-box" id="analysis100">
+                <h3>Analysis mode</h3>
+                <p>rise win = <span id="riseWin100">0</span></p>
+                <p>fall win = <span id="fallWin100">0</span></p>
+                <p>rise loss = <span id="riseLoss100">0</span></p>
+                <p>fall loss = <span id="fallLoss100">0</span></p>
+                <p>total number of trades = <span id="totalTrades100">0</span></p>
+                <p>common triggers = <span id="commonTriggers100"></span></p>
+            </div>
+            <div class="counts">
+                <p>0: <span id="count100_0" class="count-box">0</span> <span id="consecutive100_0" class="consecutive-box">0</span> <span id="maxConsecutive100_0" class="max-consecutive-box">0</span> <span id="simulation100_0" class="simulation-box">0.00</span></p>
+                <p>1: <span id="count100_1" class="count-box">0</span> <span id="consecutive100_1" class="consecutive-box">0</span> <span id="maxConsecutive100_1" class="max-consecutive-box">0</span> <span id="simulation100_1" class="simulation-box">0.00</span></p>
+                <p>2: <span id="count100_2" class="count-box">0</span> <span id="consecutive100_2" class="consecutive-box">0</span> <span id="maxConsecutive100_2" class="max-consecutive-box">0</span> <span id="simulation100_2" class="simulation-box">0.00</span></p>
+                <p>3: <span id="count100_3" class="count-box">0</span> <span id="consecutive100_3" class="consecutive-box">0</span> <span id="maxConsecutive100_3" class="max-consecutive-box">0</span> <span id="simulation100_3" class="simulation-box">0.00</span></p>
+                <p>4: <span id="count100_4" class="count-box">0</span> <span id="consecutive100_4" class="consecutive-box">0</span> <span id="maxConsecutive100_4" class="max-consecutive-box">0</span> <span id="simulation100_4" class="simulation-box">0.00</span></p>
+                <p>5: <span id="count100_5" class="count-box">0</span> <span id="consecutive100_5" class="consecutive-box">0</span> <span id="maxConsecutive100_5" class="max-consecutive-box">0</span> <span id="simulation100_5" class="simulation-box">0.00</span></p>
+                <p>6: <span id="count100_6" class="count-box">0</span> <span id="consecutive100_6" class="consecutive-box">0</span> <span id="maxConsecutive100_6" class="max-consecutive-box">0</span> <span id="simulation100_6" class="simulation-box">0.00</span></p>
+                <p>7: <span id="count100_7" class="count-box">0</span> <span id="consecutive100_7" class="consecutive-box">0</span> <span id="maxConsecutive100_7" class="max-consecutive-box">0</span> <span id="simulation100_7" class="simulation-box">0.00</span></p>
+                <p>8: <span id="count100_8" class="count-box">0</span> <span id="consecutive100_8" class="consecutive-box">0</span> <span id="maxConsecutive100_8" class="max-consecutive-box">0</span> <span id="simulation100_8" class="simulation-box">0.00</span></p>
+                <p>9: <span id="count100_9" class="count-box">0</span> <span id="consecutive100_9" class="consecutive-box">0</span> <span id="maxConsecutive100_9" class="max-consecutive-box">0</span> <span id="simulation100_9" class="simulation-box">0.00</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Console for Demo Contract Details -->
+    <div id="console" style="width: 100%; height: 200px; overflow-y: scroll; background: #000; color: #0f0; padding: 10px; font-family: monospace;"></div>
+
+    <!-- Added missing elements to fix warnings -->
+    <div id="simulationStatus" style="display: none;"></div>
+    <div id="triggerListDisplay" style="display: none;"></div>
+
+    <script>
+        // Configuration
+        const APP_ID = 86038;
+        const MARKETS = ['R_10', 'R_25', 'R_50', 'R_75', 'R_100'];
+        const PING_INTERVAL = 10000;
+        const RECONNECT_DELAY = 1000;
+
+        // Data structures
+        const digits = {
+            R_10: [],
+            R_25: [],
+            R_50: [],
+            R_75: [],
+            R_100: []
+        };
+
+        const consecutiveCounts = {
+            R_10: {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0},
+            R_25: {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0},
+            R_50: {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0},
+            R_75: {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0},
+            R_100: {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0}
+        };
+
+        const maxStreaks = {
+            R_10: { odd: 0, even: 0 },
+            R_25: { odd: 0, even: 0 },
+            R_50: { odd: 0, even: 0 },
+            R_75: { odd: 0, even: 0 },
+            R_100: { odd: 0, even: 0 }
+        };
+
+        const quotes = {
+            R_10: [],
+            R_25: [],
+            R_100: []
+        };
+
+        // Trigger lists for trade simulation
+        const triggerLists = {
+            R_10: [0.000, 0.020, 0.040, 0.060, 0.080, 0.202, 0.222, 0.262, 0.282, 0.404, 0.424, 0.444, 0.464, 0.484, 0.606, 0.626, 0.666, 0.686, 0.808, 0.828, 0.848, 0.868, 0.888],
+            R_25: [0.000, 0.020, 0.040, 0.060, 0.080, 0.202, 0.222, 0.262, 0.282, 0.404, 0.424, 0.444, 0.464, 0.484, 0.606, 0.626, 0.666, 0.686, 0.808, 0.828, 0.848, 0.868, 0.888],
+            R_100: [0.00, 0.22, 0.44, 0.66, 0.88]
+        };
+
+        // Simulation and trading state
+        const simulationState = {};
+        ['R_10', 'R_25', 'R_100'].forEach(market => {
+            simulationState[market] = {
+                box_value: 0,
+                isActive: true,
+                currentStep: 0,
+                pendingTrade: false,
+                waitingForTrigger: true,
+                tradeOutcomes: [],
+                riseWins: 0,
+                fallWins: 0,
+                riseLosses: 0,
+                fallLosses: 0,
+                totalTrades: 0,
+                triggerDigits: {},
+                levelCounts: {},
+                lastAppearanceTimes: {},
+                currentLevel: null,
+                // New properties for real trading
+                isTrading: false,
+                contractType: null,
+                currentMartingaleStep: 0,
+                pendingContract: false,
+                stakeAmounts: [0.35, 0.40, 0.80, 1.65, 3.40]
+            };
+            // Increased to 15 levels for each side
+            for (let i = 1; i <= 15; i++) {
+                simulationState[market].levelCounts[`above${i}`] = 0;
+                simulationState[market].levelCounts[`below${i}`] = 0;
+                simulationState[market].lastAppearanceTimes[`above${i}`] = null;
+                simulationState[market].lastAppearanceTimes[`below${i}`] = null;
+            }
+        });
+
+        // Global balance tracking
+        let currentBalance = 0;
+
+        // WebSocket setup
+        let ws = null;
+        let realAccountWS = null;
+        let pingTimer = null;
+        let reconnectInterval = 1000;
+
+        const expectedProfit = 1000;
+        const maxAcceptableLoss = 1000;
+
+        // Alert tracking to prevent repeated alerts
+        const alertTriggered = {
+            R_10: { above12: false, below12: false },
+            R_25: { above12: false, below12: false },
+            R_100: { above12: false, below12: false }
+        };
+
+        function getCurrentStreak(symbol) {
+            const outcomes = simulationState[symbol].tradeOutcomes;
+            if (outcomes.length === 0) return { type: null, count: 0 };
+            const lastOutcome = outcomes[outcomes.length - 1];
+            let count = 1;
+            for (let i = outcomes.length - 2; i >= 0; i--) {
+                if (outcomes[i] === lastOutcome) count++;
+                else break;
+            }
+            return { type: lastOutcome, count: count };
+        }
+
+        function drawGraph(symbol) {
+            const marketId = symbol.split('_')[1];
+            const svg = document.getElementById(`graph${marketId}`);
+            if (!svg) return;
+            
+            svg.innerHTML = '';
+
+            const yAxis = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            yAxis.setAttribute("x1", "10"); yAxis.setAttribute("y1", "10");
+            yAxis.setAttribute("x2", "10"); yAxis.setAttribute("y2", "290");
+            yAxis.setAttribute("stroke", "black"); yAxis.setAttribute("stroke-width", "2");
+            svg.appendChild(yAxis);
+
+            const middleLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            middleLine.setAttribute("x1", "10"); middleLine.setAttribute("y1", "150");
+            middleLine.setAttribute("x2", "190"); middleLine.setAttribute("y2", "150");
+            middleLine.setAttribute("stroke", "black"); middleLine.setAttribute("stroke-width", "2");
+            svg.appendChild(middleLine);
+
+            // Changed spacing to 9px to fit 15 lines in 300px height
+            const spacing = 9;
+            for (let i = 1; i <= 15; i++) {
+                const yAbove = 150 - spacing * i;
+                const lineAbove = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                lineAbove.setAttribute("x1", "10"); lineAbove.setAttribute("y1", yAbove);
+                lineAbove.setAttribute("x2", "190"); lineAbove.setAttribute("y2", yAbove);
+                lineAbove.setAttribute("stroke", "gray"); lineAbove.setAttribute("stroke-width", "1");
+                svg.appendChild(lineAbove);
+
+                const textAbove = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                textAbove.setAttribute("x", "5"); textAbove.setAttribute("y", yAbove + 5);
+                textAbove.setAttribute("text-anchor", "end"); textAbove.setAttribute("font-size", "10");
+                textAbove.textContent = i.toString();
+                svg.appendChild(textAbove);
+
+                const countAbove = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                countAbove.setAttribute("id", `countAbove${i}_${marketId}`);
+                countAbove.setAttribute("x", "195"); countAbove.setAttribute("y", yAbove + 5);
+                countAbove.setAttribute("text-anchor", "start"); countAbove.setAttribute("font-size", "10");
+                countAbove.textContent = "0";
+                svg.appendChild(countAbove);
+
+                const timeAbove = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                timeAbove.setAttribute("id", `timeAbove${i}_${marketId}`);
+                timeAbove.setAttribute("x", "205"); timeAbove.setAttribute("y", yAbove + 5);
+                timeAbove.setAttribute("text-anchor", "start"); timeAbove.setAttribute("font-size", "10");
+                timeAbove.setAttribute("fill", "red"); timeAbove.textContent = "00:00:00";
+                svg.appendChild(timeAbove);
+
+                const yBelow = 150 + spacing * i;
+                const lineBelow = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                lineBelow.setAttribute("x1", "10"); lineBelow.setAttribute("y1", yBelow);
+                lineBelow.setAttribute("x2", "190"); lineBelow.setAttribute("y2", yBelow);
+                lineBelow.setAttribute("stroke", "gray"); lineBelow.setAttribute("stroke-width", "1");
+                svg.appendChild(lineBelow);
+
+                const textBelow = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                textBelow.setAttribute("x", "5"); textBelow.setAttribute("y", yBelow + 5);
+                textBelow.setAttribute("text-anchor", "end"); textBelow.setAttribute("font-size", "10");
+                textBelow.textContent = i.toString();
+                svg.appendChild(textBelow);
+
+                const countBelow = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                countBelow.setAttribute("id", `countBelow${i}_${marketId}`);
+                countBelow.setAttribute("x", "195"); countBelow.setAttribute("y", yBelow + 5);
+                countBelow.setAttribute("text-anchor", "start"); countBelow.setAttribute("font-size", "10");
+                countBelow.textContent = "0";
+                svg.appendChild(countBelow);
+
+                const timeBelow = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                timeBelow.setAttribute("id", `timeBelow${i}_${marketId}`);
+                timeBelow.setAttribute("x", "205"); timeBelow.setAttribute("y", yBelow + 5);
+                timeBelow.setAttribute("text-anchor", "start"); timeBelow.setAttribute("font-size", "10");
+                timeBelow.setAttribute("fill", "red"); timeBelow.textContent = "00:00:00";
+                svg.appendChild(timeBelow);
+            }
+
+            const redLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            redLine.setAttribute("x1", "10"); redLine.setAttribute("y1", "150");
+            redLine.setAttribute("x2", "190"); redLine.setAttribute("y2", "150");
+            redLine.setAttribute("stroke", "red"); redLine.setAttribute("stroke-width", "2");
+            redLine.id = `redLine${marketId}`;
+            svg.appendChild(redLine);
+        }
+
+        function isTriggerQuote(symbol, quote, pip_size) {
+            const triggerList = triggerLists[symbol];
+            if (!triggerList) return false;
+            const quoteStr = quote.toFixed(pip_size);
+            const decimalPart = quoteStr.split('.')[1] || '';
+            return triggerList.some(trigger => {
+                const triggerStr = trigger.toFixed(pip_size);
+                const triggerDecimal = triggerStr.split('.')[1] || '';
+                return decimalPart === triggerDecimal.padEnd(pip_size, '0');
+            });
+        }
+
+        function updateQuoteUI(symbol) {
+            const marketId = symbol.split('_')[1];
+            const triangles = document.querySelectorAll(`#quoteContainer${marketId} .triangles .triangle`);
+            const quoteBoxes = document.querySelectorAll(`#quoteContainer${marketId} .quotes .quoteBox`);
+            const marketQuotes = quotes[symbol];
+
+            triangles.forEach((triangle, index) => {
+                if (index < marketQuotes.length - 1) {
+                    const currentQ = marketQuotes[index];
+                    const nextQ = marketQuotes[index + 1];
+                    triangle.className = currentQ.quote > nextQ.quote ? 'triangle triangle-up' : 
+                                     currentQ.quote < nextQ.quote ? 'triangle triangle-down' : 'triangle';
+                } else triangle.className = 'triangle';
+            });
+
+            quoteBoxes.forEach((quoteBox, index) => {
+                if (index < marketQuotes.length) {
+                    const q = marketQuotes[index];
+                    quoteBox.textContent = q.quote.toFixed(q.pip_size);
+                    quoteBox.style.color = q.isTrigger ? 'red' : 'black';
+                } else quoteBox.textContent = '';
+            });
+        }
+
+        function updateBalanceUI(symbol) {
+            const marketId = symbol.split('_')[1];
+            const state = simulationState[symbol];
+            if (state) {
+                const initialBalance = 2100;
+                const currentBalance = initialBalance + (state.box_value || 0);
+                const balanceElement = document.getElementById(`balance${marketId}`);
+                if (balanceElement) balanceElement.textContent = `Balance: $${currentBalance.toFixed(2)}`;
+            }
+        }
+
+        function updateAnalysisUI(symbol) {
+            const marketId = symbol.split('_')[1];
+            const state = simulationState[symbol];
+            
+            const riseWinElement = document.getElementById(`riseWin${marketId}`);
+            const fallWinElement = document.getElementById(`fallWin${marketId}`);
+            const riseLossElement = document.getElementById(`riseLoss${marketId}`);
+            const fallLossElement = document.getElementById(`fallLoss${marketId}`);
+            const totalTradesElement = document.getElementById(`totalTrades${marketId}`);
+            const commonTriggersElement = document.getElementById(`commonTriggers${marketId}`);
+            
+            if (riseWinElement) riseWinElement.textContent = state.riseWins;
+            if (fallWinElement) fallWinElement.textContent = state.fallWins;
+            if (riseLossElement) riseLossElement.textContent = state.riseLosses;
+            if (fallLossElement) fallLossElement.textContent = state.fallLosses;
+            if (totalTradesElement) totalTradesElement.textContent = state.totalTrades;
+
+            let maxCount = 0, commonDigit = '';
+            for (const [digit, count] of Object.entries(state.triggerDigits)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    commonDigit = digit;
+                }
+            }
+            if (commonTriggersElement) commonTriggersElement.textContent = commonDigit || 'N/A';
+        }
+
+        function connectWebSocket() {
+            try {
+                ws = new WebSocket(`wss://ws.derivws.com/websockets/v3?app_id=${APP_ID}`);
+                ws.onerror = handleError;
+                ws.onopen = () => {
+                    console.log('WebSocket connection opened.');
+                    startPingInterval();
+                    subscribeToMarkets();
+                    initializeUI();
+                    reconnectInterval = 1000;
+                };
+                ws.onclose = handleClose;
+                ws.onmessage = handleMessage;
+            } catch (error) {
+                console.error('Connection error:', error);
+                setTimeout(connectWebSocket, reconnectInterval);
+                reconnectInterval = Math.min(reconnectInterval + 1000, 10000);
+            }
+        }
+
+        function loginToDeriv(token) {
+            if (realAccountWS) realAccountWS.close();
+            realAccountWS = new WebSocket(`wss://ws.derivws.com/websockets/v3?app_id=${APP_ID}`);
+            realAccountWS.onopen = () => {
+                realAccountWS.send(JSON.stringify({ authorize: token }));
+            };
+            realAccountWS.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.authorize) {
+                    const loginStatusElement = document.getElementById('loginStatus');
+                    if (loginStatusElement) {
+                        loginStatusElement.textContent = `Logged in as: ${data.authorize.loginid}`;
+                        loginStatusElement.style.color = 'green';
+                    }
+                    realAccountWS.send(JSON.stringify({ "balance": 1, "subscribe": 1 }));
+                }  if (data.error) {
+                    const loginStatusElement = document.getElementById('loginStatus');
+                    if (loginStatusElement) {
+                        loginStatusElement.textContent = `Login failed: ${data.error.message}`;
+                        loginStatusElement.style.color = 'red';
+                    }
+                } else if (data.balance) {
+                    currentBalance = data.balance.balance;
+                    const accountBalanceElement = document.getElementById('accountBalance');
+                    if (accountBalanceElement) accountBalanceElement.textContent = currentBalance.toFixed(2);
+                }
+            };
+            realAccountWS.onerror = () => {
+                const loginStatusElement = document.getElementById('loginStatus');
+                if (loginStatusElement) {
+                    loginStatusElement.textContent = 'WebSocket error';
+                    loginStatusElement.style.color = 'red';
+                }
+            };
+            realAccountWS.onclose = () => {
+                const loginStatusElement = document.getElementById('loginStatus');
+                if (loginStatusElement) {
+                    loginStatusElement.textContent = 'Connection closed';
+                    loginStatusElement.style.color = 'orange';
+                }
+            };
+        }
+
+        function handleMessage(event) {
+            const data = JSON.parse(event.data);
+            if (data.tick) processTickData(data.tick);
+            else if (data.error) console.error('API error:', data.error);
+        }
+
+        function processTickData(tick) {
+            const { symbol, quote, pip_size = 2 } = tick;
+            const lastDigit = Math.floor(quote * 10 ** pip_size) % 10;
+            const newDigit = { value: lastDigit, consecutive: false };
+            const symbolDigits = digits[symbol];
+
+            if (symbolDigits.length > 0) {
+                const prevDigit = symbolDigits[symbolDigits.length - 1];
+                if (prevDigit.value === newDigit.value) {
+                    prevDigit.consecutive = true;
+                    newDigit.consecutive = true;
+                }
+            }
+
+            symbolDigits.push(newDigit);
+            if (symbolDigits.length > 100) symbolDigits.shift();
+
+            if (symbol === 'R_10' || symbol === 'R_25' || symbol === 'R_100') {
+                const isTrigger = isTriggerQuote(symbol, quote, pip_size);
+                quotes[symbol].unshift({ quote: quote, pip_size: pip_size, isTrigger: isTrigger });
+                if (quotes[symbol].length > 4) quotes[symbol].pop();
+                updateQuoteUI(symbol);
+            }
+
+            updateUI(symbol, quote);
+            updateConsecutiveCounts(symbol, lastDigit);
+            updateStreakCount(symbol, lastDigit);
+
+            if (symbol === 'R_10' || symbol === 'R_25' || symbol === 'R_100') {
+                const state = simulationState[symbol];
+                if (state && state.isActive) {
+                    if (state.pendingTrade) {
+                        let isWin = lastDigit % 2 !== 0;
+                        processTradeOutcome(symbol, isWin);
+                        state.tradeOutcomes.push(isWin ? 'win' : 'loss');
+                        state.totalTrades += 1;
+                        state.triggerDigits[lastDigit] = (state.triggerDigits[lastDigit] || 0) + 1;
+
+                        if (isWin) {
+                            if (state.triggerDirection === 'rise') state.riseWins += 1;
+                            else if (state.triggerDirection === 'fall') state.fallWins += 1;
+                        } else {
+                            if (state.triggerDirection === 'rise') state.riseLosses += 1;
+                            else if (state.triggerDirection === 'fall') state.fallLosses += 1;
+                        }
+
+                        const streak = getCurrentStreak(symbol);
+                        const marketId = symbol.split('_')[1];
+                        const redLine = document.getElementById(`redLine${marketId}`);
+                        if (redLine) {
+                            let y;
+                            // Changed to 9px spacing to match the graph
+                            if (streak.type === 'loss') {
+                                const count = Math.min(streak.count, 15);
+                                y = 150 - 9 * count;
+                            } else if (streak.type === 'win') {
+                                const count = Math.min(streak.count, 15);
+                                y = 150 + 9 * count;
+                            } else y = 150;
+                            redLine.setAttribute("y1", y);
+                            redLine.setAttribute("y2", y);
+
+                            let currentLevel = null;
+                            if (y < 150) {
+                                const count = Math.round((150 - y) / 9);
+                                if (count >= 1 && count <= 15) currentLevel = `above${count}`;
+                            } else if (y > 150) {
+                                const count = Math.round((y - 150) / 9);
+                                if (count >= 1 && count <= 15) currentLevel = `below${count}`;
+                            }
+
+                            // Check for 12th line and trigger alert
+                            if (currentLevel === 'above12' || currentLevel === 'below12') {
+                                if (!alertTriggered[symbol][currentLevel]) {
+                                    triggerStepperAlert(symbol, currentLevel);
+                                    alertTriggered[symbol][currentLevel] = true;
+                                    
+                                    // Reset after some time
+                                    setTimeout(() => {
+                                        alertTriggered[symbol][currentLevel] = false;
+                                    }, 60000); // Reset after 1 minute
+                                }
+                            }
+
+                            if (currentLevel && currentLevel !== state.currentLevel) {
+                                state.levelCounts[currentLevel] += 1;
+                                state.lastAppearanceTimes[currentLevel] = new Date().getTime();
+                                const countElementId = currentLevel.startsWith('above') ? 
+                                    `countAbove${currentLevel.slice(5)}_${marketId}` : 
+                                    `countBelow${currentLevel.slice(5)}_${marketId}`;
+                                const countElement = document.getElementById(countElementId);
+                                if (countElement) countElement.textContent = state.levelCounts[currentLevel];
+                            }
+                            state.currentLevel = currentLevel;
+
+                            if (symbol === 'R_10' || symbol === 'R_25') {
+                                if (streak.count === 6 && !Object.values(simulationState).some(s => s.isTrading)) {
+                                    state.contractType = streak.type === 'loss' ? 'odd' : 'even';
+                                    state.isTrading = true;
+                                    state.currentMartingaleStep = 0;
+                                    const statusElement = document.getElementById(`v${marketId}Status`);
+                                    if (statusElement) statusElement.textContent = 'trading';
+                                }
+                            }
+                        }
+                        updateSimulationUI(symbol);
+                        updateAnalysisUI(symbol);
+                        state.pendingTrade = false;
+
+                        if (isWin) {
+                            state.currentStep = 0;
+                            state.waitingForTrigger = true;
+                        } else {
+                            if (state.currentStep < 11) state.currentStep += 1;
+                            state.waitingForTrigger = true;
+                        }
+                    }
+
+                    if (state.waitingForTrigger && isTriggerQuote(symbol, quote, pip_size)) {
+                        state.pendingTrade = true;
+                        state.waitingForTrigger = false;
+                        if (quotes[symbol].length >= 2) {
+                            const currentQuote = quotes[symbol][0].quote;
+                            const previousQuote = quotes[symbol][1].quote;
+                            state.triggerDirection = currentQuote > previousQuote ? 'rise' : 
+                                                    (currentQuote < previousQuote ? 'fall' : 'neutral');
+                        } else state.triggerDirection = 'unknown';
+                    }
+
+                    if (symbol === 'R_10' || symbol === 'R_25') {
+                        if (state.isTrading && isTriggerQuote(symbol, quote, pip_size)) {
+                            const stake = state.stakeAmounts[state.currentMartingaleStep];
+                            const contractType = state.contractType === 'odd' ? 'DIGITODD' : 'DIGITEVEN';
+                            if (realAccountWS && realAccountWS.readyState === WebSocket.OPEN) {
+                                const buyRequest = {
+                                    "buy": 1,
+                                    "price": stake,
+                                    "parameters": {
+                                        "contract_type": contractType,
+                                        "symbol": symbol,
+                                        "duration": 1,
+                                        "duration_unit": "t",
+                                        "basis": "stake",
+                                        "amount": stake,
+                                        "currency": "USD"
+                                    }
+                                };
+                                realAccountWS.send(JSON.stringify(buyRequest));
+                                state.pendingContract = true;
+                            }
+                        }
+
+                        if (state.pendingContract) {
+                            const isOdd = lastDigit % 2 === 1;
+                            const isWin = (state.contractType === 'odd' && isOdd) || (state.contractType === 'even' && !isOdd);
+                            const stake = state.stakeAmounts[state.currentMartingaleStep];
+                            if (isWin) {
+                                currentBalance += stake * 0.9; // Simulated payout
+                                state.isTrading = false;
+                                state.currentMartingaleStep = 0;
+                                const statusElement = document.getElementById(`v${marketId}Status`);
+                                if (statusElement) statusElement.textContent = 'idle';
+                            } else {
+                                currentBalance -= stake;
+                                if (state.currentMartingaleStep < 4) state.currentMartingaleStep += 1;
+                            }
+                            state.pendingContract = false;
+                            const accountBalanceElement = document.getElementById('accountBalance');
+                            if (accountBalanceElement) accountBalanceElement.textContent = currentBalance.toFixed(2);
+                        }
+                    }
+                }
+            }
+        }
+
+        function triggerStepperAlert(symbol, level) {
+            // Play alert sound
+            const alertSound = document.getElementById('alertSound');
+            if (alertSound) {
+                alertSound.currentTime = 0;
+                alertSound.play().catch(e => console.log("Audio play failed:", e));
+            }
+            
+            // Show notification
+            if (Notification.permission === 'granted') {
+                new Notification(`Steppers trade entry confirmed ${new Date().toLocaleTimeString()}`, {
+                    body: `${symbol} ${level} line triggered`,
+                    icon: 'https://example.com/icon.png' // Optional icon
+                });
+            } else if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        new Notification(`Steppers trade entry confirmed ${new Date().toLocaleTimeString()}`, {
+                            body: `${symbol} ${level} line triggered`
+                        });
+                    }
+                });
+            }
+            
+            // Show on-screen alert
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert-notification';
+            alertDiv.innerHTML = `
+                <h3>Steppers Trade Entry Confirmed</h3>
+                <p>${symbol} ${level} line triggered at ${new Date().toLocaleTimeString()}</p>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            // Remove alert after 5 seconds
+            setTimeout(() => {
+                if (document.body.contains(alertDiv)) {
+                    document.body.removeChild(alertDiv);
+                }
+            }, 5000);
+        }
+
+        function updateStreakCount(symbol, digit) {
+            const isEven = digit % 2 === 0;
+            const digitsArray = digits[symbol];
+            let currentStreak = 1;
+
+            for (let i = digitsArray.length - 2; i >= 0; i--) {
+                const prevDigit = digitsArray[i].value;
+                if ((isEven && prevDigit % 2 === 0) || (!isEven && prevDigit % 2 !== 0)) currentStreak++;
+                else break;
+            }
+
+            const marketId = symbol.split('_')[1];
+            if (isEven) {
+                if (currentStreak > maxStreaks[symbol].even) {
+                    maxStreaks[symbol].even = currentStreak;
+                    const element = document.getElementById(`maxConsecutiveEven${marketId}`);
+                    if (element) element.textContent = currentStreak;
+                }
+            } else {
+                if (currentStreak > maxStreaks[symbol].odd) {
+                    maxStreaks[symbol].odd = currentStreak;
+                    const element = document.getElementById(`maxConsecutiveOdd${marketId}`);
+                    if (element) element.textContent = currentStreak;
+                }
+            }
+        }
+
+        function updateUI(symbol, quote) {
+            const marketId = symbol.split('_')[1];
+            updateTable(`table${marketId}`, digits[symbol], quote);
+        }
+
+        function updateTable(tableId, digitsArray, quote) {
+            const table = document.getElementById(tableId);
+            if (table) {
+                const cells = table.getElementsByTagName('td');
+                digitsArray.slice(-100).reverse().forEach((digitObj, index) => {
+                    if (index < 100 && cells[index]) {
+                        cells[index].textContent = digitObj.value;
+                        cells[index].classList.toggle('consecutive', digitObj.consecutive);
+                    }
+                });
+            }
+        }
+
+        function updateConsecutiveCounts(symbol, lastDigit) {
+            let currentStreak = 1;
+            const digitsArray = digits[symbol];
+
+            for (let i = digitsArray.length - 1; i > 0; i--) {
+                if (digitsArray[i].value === digitsArray[i - 1].value && digitsArray[i].value === lastDigit) currentStreak++;
+                else break;
+            }
+
+            if (currentStreak > consecutiveCounts[symbol][lastDigit]) {
+                consecutiveCounts[symbol][lastDigit] = currentStreak;
+                updateConsecutiveUI(symbol, lastDigit);
+            }
+        }
+
+        function updateConsecutiveUI(symbol, digit) {
+            const marketId = symbol.split('_')[1];
+            const element = document.getElementById(`consecutive${marketId}_${digit}`);
+            if (element) element.textContent = consecutiveCounts[symbol][digit];
+        }
+
+        function startPingInterval() {
+            pingTimer = setInterval(() => {
+                if (ws?.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ ping: 1 }));
+            }, PING_INTERVAL);
+        }
+
+        function handleClose(event) {
+            console.warn(`Connection closed: ${event.reason || 'Unknown reason'}`);
+            clearInterval(pingTimer);
+            setTimeout(connectWebSocket, reconnectInterval);
+            reconnectInterval = Math.min(reconnectInterval + 1000, 10000);
+        }
+
+        function handleError(event) {
+            console.error('WebSocket error:', event);
+            if (ws) ws.close();
+            setTimeout(connectWebSocket, reconnectInterval);
+            reconnectInterval = Math.min(reconnectInterval + 1000, 10000);
+        }
+
+        function subscribeToMarkets() {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                MARKETS.forEach(market => ws.send(JSON.stringify({ ticks: market })));
+            } else console.warn('WebSocket is not open.');
+        }
+
+        function initializeUI() {
+            MARKETS.forEach(symbol => {
+                const marketId = symbol.split('_')[1];
+                updateTable(`table${marketId}`, digits[symbol]);
+                for (let digit = 0; digit <= 9; digit++) updateConsecutiveUI(symbol, digit);
+            });
+            ['R_10', 'R_25', 'R_100'].forEach(symbol => {
+                const marketId = symbol.split('_')[1];
+                const accumulationElement = document.getElementById(`accumulation${marketId}`);
+                if (accumulationElement) accumulationElement.textContent = `$0.00`;
+                updateBalanceUI(symbol);
+                drawGraph(symbol);
+                updateAnalysisUI(symbol);
+            });
+        }
+
+        function processTradeOutcome(symbol, isWin) {
+            const state = simulationState[symbol];
+            if (!state.isActive) return;
+
+            const currentStep = state.currentStep;
+            const stake = state.stakeAmounts[currentStep];
+            const payout = stake * 0.9; // Simulated payout factor
+
+            if (isWin) {
+                state.box_value += payout;
+                console.log(`${symbol}: WIN - Payout: $${payout}, New Balance: $${2100 + state.box_value}`);
+            } else {
+                state.box_value -= stake;
+                console.log(`${symbol}: LOSS - Stake: $${stake}, New Balance: $${2100 + state.box_value}`);
+            }
+
+            updateBalanceUI(symbol);
+
+            const totalProfit = Object.values(simulationState).reduce((sum, state) => sum + (state.box_value || 0), 0);
+            if (totalProfit >= expectedProfit) {
+                console.log(`Done! Total Profit: $${totalProfit}`);
+                Object.values(simulationState).forEach(state => state.isActive = false);
+            } else if (totalProfit <= -maxAcceptableLoss) {
+                console.log(`Max loss reached: $${totalProfit}.`);
+                Object.values(simulationState).forEach(state => state.isActive = false);
+            }
+        }
+
+        function updateSimulationUI(symbol) {
+            if (symbol === 'R_10' || symbol === 'R_25' || symbol === 'R_100') {
+                const marketId = symbol.split('_')[1];
+                const accumulationElement = document.getElementById(`accumulation${marketId}`);
+                if (accumulationElement) {
+                    accumulationElement.textContent = `$${(simulationState[symbol].box_value || 0).toFixed(2)}`;
+                }
+            }
+        }
+
+        function updateTimeDisplays() {
+            const now = new Date().getTime();
+            ['R_10', 'R_25', 'R_100'].forEach(market => {
+                const marketId = market.split('_')[1];
+                const state = simulationState[market];
+                for (let i = 1; i <= 15; i++) {
+                    ['above', 'below'].forEach(position => {
+                        const level = `${position}${i}`;
+                        const timeElement = document.getElementById(`time${position.charAt(0).toUpperCase() + position.slice(1)}${i}_${marketId}`);
+                        if (timeElement) {
+                            if (level === state.currentLevel) timeElement.textContent = '00:00:00';
+                            else {
+                                const lastTime = state.lastAppearanceTimes[level];
+                                if (lastTime) {
+                                    const elapsed = Math.floor((now - lastTime) / 1000);
+                                    const hours = Math.floor(elapsed / 3600);
+                                    const minutes = Math.floor((elapsed % 3600) / 60);
+                                    const secs = elapsed % 60;
+                                    timeElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                                } else timeElement.textContent = '00:00:00';
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        // Request notification permission on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+            
+            const loginButton = document.getElementById('loginButton');
+            if (loginButton) {
+                loginButton.addEventListener('click', () => {
+                    const token = document.getElementById('apiToken').value;
+                    if (token) {
+                        loginToDeriv(token);
+                    } else {
+                        alert('Please enter an API token.');
+                    }
+                });
+            }
+
+            function updateBalanceDisplay(marketId, box_value) {
+                const initialBalance = 2100;
+                const currentBalance = initialBalance + (box_value || 0);
+                const balanceElement = document.getElementById(`balance${marketId}`);
+                if (balanceElement) balanceElement.textContent = `Balance: $${currentBalance.toFixed(2)}`;
+            }
+
+            function updateMarketStatus(marketId, status) {
+                const statusElement = document.getElementById(`v${marketId}Status`);
+                if (statusElement) {
+                    statusElement.textContent = status;
+                }
+            }
+
+            // Initialize graphs
+            ['R_10', 'R_25', 'R_100'].forEach(symbol => {
+                drawGraph(symbol);
+            });
+        });
+
+        connectWebSocket();
+        setInterval(updateTimeDisplays, 1000);
+    </script>
+</body>
+</html>
